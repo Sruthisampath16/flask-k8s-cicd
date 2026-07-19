@@ -1,0 +1,65 @@
+name: cicd pipeline
+
+on:
+  push:
+    braches: main
+
+env:
+  IMAGE_NAME: sruthidoc07/flask-k8s-cicd
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      -uses: actions/checkout@v4
+
+      - name: set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r app/requirements.txt pytest
+
+      - name: run tests
+        run: pytest app/
+  build-and-push:
+    needs: test
+      runs-on: ububtu-latest
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: log in to dockerhub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+        - name: build-and-push
+          uses: docker/build-push-action@v6
+          with: 
+            context: .
+            push: true
+            tags: |
+              ${{ env.IMAGE_NAME }}:{{github.sha }}
+              ${{ env.IMAGE_NAME }}:latest
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/chekout@v4
+
+      - name: set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > HOME/.kubeconfig
+
+      - name: deploy  new image
+        run: |
+          kubectl set image deployment/flask-app\
+           flask-app=${{ env.IMAGE_NAME }}:{{github.sha}}
+          kubectl rollout status deployment/flask-app --timeout=120
