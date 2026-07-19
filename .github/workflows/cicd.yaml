@@ -56,7 +56,7 @@ jobs:
       - name: configure kubeconfig
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kubeconfig
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
 
       - name: deploy  new image
         run: |
