@@ -10,8 +10,8 @@ APP_VERSION = os.environ.get("APP_VERSION","v1")
 @app.route("/")
 def home():
     return jsonify({
-	"message": "Hello from flask on k8s"
-	"version": APP_VERSION
+	"message": "Hello from flask on k8s,"
+	"version": APP_VERSION,
 	"hostname": socket.gethostename(),
 })
 
