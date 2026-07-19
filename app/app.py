@@ -10,7 +10,7 @@ APP_VERSION = os.environ.get("APP_VERSION","v1")
 @app.route("/")
 def home():
     return jsonify({
-      "message": "Hello from flask on k8s,"
+      "message": "Hello from flask on k8s",
       "version": APP_VERSION,
       "hostname": socket.gethostname(),
 })
@@ -18,7 +18,7 @@ def home():
 
 @app.route("/healthz")
 def healthz():
-    return jsontify({"status:alive"}),200
+    return jsonify({"status":"alive"}),200
 
 @app.route("/readyz")
 def route():
