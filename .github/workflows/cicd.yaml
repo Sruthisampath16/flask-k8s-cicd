@@ -43,23 +43,4 @@ jobs:
           tags: |
              ${{ env.IMAGE_NAME }}:${{github.sha }}
              ${{ env.IMAGE_NAME }}:latest
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: set up kubectl
-        uses: azure/setup-kubectl@v4
-
-      - name: configure kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
-
-      - name: deploy  new image
-        run: |
-          kubectl set image deployment/flask-app \
-           flask-app=${{ env.IMAGE_NAME }}:${{github.sha}}
-          kubectl rollout status deployment/flask-app --timeout=120s

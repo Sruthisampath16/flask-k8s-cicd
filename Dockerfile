@@ -1,5 +1,4 @@
-FROM python:3.12-slim as builder
-
+FROM python:3.12-slim AS builder
 WORKDIR /app
 COPY app/requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
@@ -14,7 +13,7 @@ COPY app/app.py .
 
 ENV PATH=/home/appuser/.local/bin:$PATH
 ENV APP_VERSION=v1
-
+ENV PYTHONPATH=/home/appuser/.local/lib/python3.12/site-packages
 USER appuser
 
 EXPOSE 5000
