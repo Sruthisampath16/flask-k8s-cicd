@@ -1,12 +1,12 @@
-appVersion: apps
+apiVersion: v1
 kind: Service
 metadata:
-  name:flask-app-cicd
-    spec: 
-      type: Nodeport
-      selector:
-        app: flask-app
-      ports:
-        -port: 80
-         targetPorts: 5000 
-         nodePort:30080
+  name: flask-app-cicd
+spec:
+  type: NodePort
+  selector:
+    app: flask-app
+  ports:
+    - port: 80
+      targetPort: 5000
+      nodePort: 30080
