@@ -9,8 +9,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 0   # never drop below desired replica count during update
-      maxSurge: 1         # add 1 extra pod at a time while updating
+      maxUnavailable: 0 # never drop below desired replica count during update
+      maxSurge: 1 # add 1 extra pod at a time while updating
   selector:
     matchLabels:
       app: flask-app
@@ -21,12 +21,17 @@ spec:
     spec:
       containers:
         - name: flask-app
-          image: sruthidoc07/flask-k8s-cicd:latest   # replace with your Docker Hub image
+          image: sruthidoc07/flask-k8s-cicd:latest # replace with your Docker Hub image
           ports:
             - containerPort: 5000
           env:
             - name: APP_VERSION
               value: "v1"
+            - name: DB_HOST
+              value: "postgres-service"
+          envFrom:
+            - secretRef:
+                name: postgres-secret
           resources:
             requests:
               cpu: "100m"
