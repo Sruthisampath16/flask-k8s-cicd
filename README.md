@@ -123,15 +123,6 @@ curl http://localhost:8080/readyz
 # {"status": "ready", "database": "connected"}
 ```
 
-## Bugs hit and fixed along the way (kept here deliberately — good interview material)
-
-- Dockerfile `CMD` missing a required space, causing a parse error
-- Gunicorn missing at runtime, traced to a stale rebuilt image
-- `get_db_connection` called without parentheses, causing an `AttributeError`
-- Missing `import psycopg2`, causing a `NameError`
-- A Docker image name typo during a rebuild, causing a stale image to silently persist
-- A label mismatch (`app: postgress` vs `app: postgres`) between the Postgres pod and its Service's selector, resulting in zero endpoints and "connection refused" even though Postgres itself was healthy
-
 ## What I'd improve with more time
 
 - Complete the AWS EKS migration for fully automated deploy
