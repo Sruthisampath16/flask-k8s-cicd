@@ -130,3 +130,7 @@ curl http://localhost:8080/readyz
 - Add a staging namespace and promote images staging → prod
 - Add Prometheus/Grafana for real rollout metrics
 - Move from NodePort to an Ingress controller with a real domain
+
+## Security hardening applied
+
+This deployment's `k8s/deployment.yaml` now includes pod- and container-level `securityContext` settings (`runAsNonRoot`, an explicit numeric `runAsUser`, dropped Linux capabilities, `allowPrivilegeEscalation: false`, and a seccomp profile), enforced via the `restricted` Pod Security Standard on the namespace. This was developed and documented as part of a separate, dedicated project — [security-hardened-kubernetes-platform](https://github.com/Sruthisampath16/Security-Hardened-Kubernetes-Platform) — which also covers RBAC, NetworkPolicy, and container image vulnerability scanning against this same Flask image.

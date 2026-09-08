@@ -19,11 +19,21 @@ spec:
       labels:
         app: flask-app
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: flask-app
           image: sruthidoc07/flask-k8s-cicd:latest # replace with your Docker Hub image
           ports:
             - containerPort: 5000
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: APP_VERSION
               value: "v1"
