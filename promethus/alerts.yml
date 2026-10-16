@@ -2,7 +2,7 @@ groups:
   - name: server-alerts
     rules: 
       - alert: HighCPUUsage
-        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"[5m]})*100) > 80
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]))*100) > 80
         for: 5m
         labels:
          severity: warning
@@ -11,7 +11,7 @@ groups:
          description: "CPU usage is {{ $value }}% which is above 80%"
 
       - alert: HighMemoryUsage
-        expr: (1 - (node_memory_MemAvailable_bytes/node_memory_memtotal_bytes)) * 100 > 85
+        expr: (1 - (node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes)) * 100 > 85
         for: 5m
         labels:
           severity: warning
@@ -20,7 +20,7 @@ groups:
           description: "Memory usage is {{ $value }}% which is above 85%"
           
       - alert: DiskAlmostFull
-        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 90
+        expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"}/ node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 90
         for: 1m
         labels:
           severity: critical
@@ -28,10 +28,10 @@ groups:
           summary: "Disk almost full on {{ $labels.instance }}"
           description: "Disk usage is {{ $value }}% which is above 90%"
       - alert: ServerDown
-        expr: up==0
+        expr: up == 0
         for: 1m
         labels:
-          severity: critical\
+          severity: critical
         annotations:
           summary: "Service {{ $labels.job }} is down!"
           description: "{{ $labels.instance }} has been down for more than 1 minute"  

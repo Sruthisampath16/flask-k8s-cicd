@@ -1,16 +1,25 @@
 global:
   resolve_timeout: 5m
   smtp_smarthost: 'smtp.gmail.com:587'
-  smtp_from: 'sruthisamabth@gmail.com'
-  smtp_auth_username: 'sruthisamabth@gmail.com'
+  smtp_from: 'sruthisambath@gmail.com'
+  smtp_auth_username: 'sruthisambath@gmail.com'
   smtp_auth_password: 'vwql vbrw jabh bmdu'
   smtp_require_tls: true  
 route:
-  group_by: ['aletname']
+  group_by: ['alertname', 'severity']
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 3h 
   receiver: 'email-alerts'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'email-alerts'
+      group_wait: 10s
+    - match:
+        severity: warning
+      receiver: 'email-alerts'
+      group_wait: 30s
 
 receivers:
   - name: 'email-alerts'
